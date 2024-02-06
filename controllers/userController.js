@@ -57,6 +57,7 @@ const signin = async (req, res) => {
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
     const matchedPassword = await bcrypt.compare(
       password,
       existingUser.password
@@ -66,13 +67,16 @@ const signin = async (req, res) => {
     }
 
     // Check if it's a new login
-    const newLoginDetected = existingUser.session !== req.cookies.session;
+    const newLoginDetected = req.cookies.token !== generateToken(existingUser);
 
-    // Update the session identifier on each login
+    // Update the session identifier and token on each login
     existingUser.session = Math.random().toString(36).substring(7);
     await existingUser.save();
-
     const token = generateToken(existingUser);
+
+    // Clear existing cookies
+    res.clearCookie("token");
+    res.clearCookie("session");
 
     // Set the token and session as cookies
     res.cookie("token", token);
