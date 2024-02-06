@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
     password: String,
+    session: String,
   },
   { timeStamps: true }
 );
