@@ -1,6 +1,8 @@
 const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const express = require("express");
+
 const SECRET_KEY = "NOTESAPI";
 
 const signup = async (req, res) => {
@@ -21,6 +23,10 @@ const signup = async (req, res) => {
     });
 
     const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
+
+    // Set the token as a cookie
+    res.cookie("token", token);
+
     res.status(201).json({ user: result, token: token });
   } catch (error) {
     console.log(error);
@@ -46,6 +52,10 @@ const signin = async (req, res) => {
       { email: existingUser.email, id: existingUser._id },
       SECRET_KEY
     );
+
+    // Set the token as a cookie
+    res.cookie("token", token);
+
     res.status(201).json({ user: existingUser, token: token });
   } catch (error) {
     console.log(error);

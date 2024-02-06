@@ -4,8 +4,10 @@ const userRouter = require("./routes/user");
 const routes = require("./routes/route");
 const PORT = 3000;
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/users", userRouter);
 app.use("/route", routes);
